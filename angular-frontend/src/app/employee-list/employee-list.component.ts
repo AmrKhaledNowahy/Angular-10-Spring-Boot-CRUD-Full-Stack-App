@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Employee } from '../employee'
-import { EmployeeService } from '../employee.service'
+import {BrowserModule} from "@angular/platform-browser";
+import { Employee } from '../employee';
+import { EmployeeService } from '../employee.service';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-employee-list',
   templateUrl: './employee-list.component.html',
@@ -10,15 +12,16 @@ import { Router } from '@angular/router';
 export class EmployeeListComponent implements OnInit {
 
   employees: Employee[];
+  private confirmed: boolean;
 
   constructor(private employeeService: EmployeeService,
-    private router: Router) { }
+              private router: Router) { }
 
   ngOnInit(): void {
     this.getEmployees();
   }
 
-  private getEmployees(){
+  getEmployees(){
     this.employeeService.getEmployeesList().subscribe(data => {
       this.employees = data;
     });
@@ -33,9 +36,13 @@ export class EmployeeListComponent implements OnInit {
   }
 
   deleteEmployee(id: number){
-    this.employeeService.deleteEmployee(id).subscribe( data => {
-      console.log(data);
-      this.getEmployees();
-    })
+    if(confirm("Do you really want to delete this user? ")){
+      this.employeeService.deleteEmployee(id).subscribe( data => {
+        console.log(data);
+        this.getEmployees();
+      });
+    }else return;
+
   }
+
 }
